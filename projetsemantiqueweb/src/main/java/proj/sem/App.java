@@ -13,8 +13,10 @@ public class App
 {
     public static void main( String[] args ) throws IOException, CsvValidationException
     {
-        RDFConstructor rdfConstr= new RDFConstructor();
+        //RDFConstructor rdfConstr= new RDFConstructor();
 
        /* RDFConstructor rdfConstr2= new RDFConstructor(0);*/
+
+       TtlFile f=new TtlFile();
     }
 }
