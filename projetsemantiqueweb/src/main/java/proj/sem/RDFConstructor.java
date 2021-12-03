@@ -22,7 +22,7 @@ public class RDFConstructor {
     public RDFConstructor() throws CsvValidationException, IOException{
        // create an empty Model
        Model model = ModelFactory.createDefaultModel();
-       //model.setNsPrefix("rdfs", RDFS.uri);
+       /*//model.setNsPrefix("rdfs", RDFS.uri);
         model.setNsPrefix("ex", "http://www.example.com/");
         model.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
         model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -30,7 +30,7 @@ public class RDFConstructor {
         
         //stops200.txt
         //J'ai des problème d'encodage de caractères au niveau du CSVReader mais sinon tout marche
-        CSVReader reader = new CSVReader(new FileReader(".\\data\\stops.txt"));
+        CSVReader reader = new CSVReader(new FileReader("C:/Users/meddy/Desktop/M2 DSC/ter/sample.txt"));
         String[] lineInArray;
         lineInArray = reader.readNext();
         while ((lineInArray = reader.readNext()) != null) {
@@ -40,19 +40,19 @@ public class RDFConstructor {
             root.addProperty(model.createProperty("http://www.w3.org/2003/01/geo/wgs84_pos#"+"long"), lineInArray[4] ,XSDGenericType.XSDdecimal);
         
             model.add(root,RDF.type,model.createResource("http://www.w3.org/2003/01/geo/wgs84_pos#"+"SpatialThing"));
-        }
+        }*/
 
-
-       // model.read("https://emse.fr/~zimmermann/antoine.ttl");
-        model.write(System.out,"Turtle");
+        model.read("https://territoire.emse.fr/kg/ontology.ttl");
+        model.write(System.out, "Turtle");
+        
         
     }
 
     public RDFConstructor(int i) throws CsvValidationException, IOException{
     
         Model model = ModelFactory.createDefaultModel();
-
-        model.setNsPrefix("ex", "http://www.example.com/");
+        
+        /*model.setNsPrefix("ex", "http://www.example.com/");
         model.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
         model.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
         model.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
@@ -68,7 +68,7 @@ public class RDFConstructor {
             root.addProperty(model.createProperty("http://www.w3.org/2003/01/geo/wgs84_pos#"+"long"), lineInArray[4] ,XSDGenericType.XSDdecimal);
         
             model.add(root,RDF.type,model.createResource("http://www.w3.org/2003/01/geo/wgs84_pos#"+"SpatialThing"));
-        }
+        }*/
 
 
         // ... build the model
