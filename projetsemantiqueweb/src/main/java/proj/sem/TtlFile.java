@@ -23,18 +23,18 @@ public class TtlFile {
        
         retrievAdress("https://territoire.emse.fr/kg/");
         
-        for (String s : listModelAdress) {
-            System.out.printf(s+"\n");
-        }
-        //(".*\\.req\\.copied")
-        listModelAdress.add("https://territoire.emse.fr/kg/ontology.ttl");
-        listModelAdress.add("https://territoire.emse.fr/kg/emse/index.ttl");
-
        /* for (String s : listModelAdress) {
+            System.out.printf(s+"\n");
+        }*/
+        //(".*\\.req\\.copied")
+        /*listModelAdress.add("https://territoire.emse.fr/kg/ontology.ttl");
+        listModelAdress.add("https://territoire.emse.fr/kg/emse/index.ttl");*/
+
+        for (String s : listModelAdress) {
             listModel.add(ModelFactory.createDefaultModel().read(s));
         }
 
-        for(Model m: listModel){
+       /* for(Model m: listModel){
             m.write(System.out,"Turtle");
         }*/
     }
@@ -50,11 +50,15 @@ public class TtlFile {
                 listModelAdress.add(headline.absUrl("href"));
             }
             if(headline.absUrl("href").matches(adress +".*\\/")){
-                System.out.printf("%s \n", headline.absUrl("href"));
+               // System.out.printf("%s \n", headline.absUrl("href"));
                 retrievAdress(headline.absUrl("href"));
                 }
         }
 
+    }
+
+    public List<Model> getListModel(){
+        return this.listModel;
     }
 
   
