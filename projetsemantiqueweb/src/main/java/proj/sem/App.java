@@ -13,7 +13,7 @@ public class App
 {
     public static void main( String[] args ) throws IOException, CsvValidationException
     {
-        RDFConstructor rdfConstr= new RDFConstructor();
+        WebScrapper webscrapper= new WebScrapper();
 
        /* RDFConstructor rdfConstr2= new RDFConstructor(0);*/
     }
