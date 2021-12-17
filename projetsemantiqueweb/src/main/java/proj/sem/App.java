@@ -17,8 +17,10 @@ public class App
 
        /* RDFConstructor rdfConstr2= new RDFConstructor(0);*/
 
-       TtlFile f=new TtlFile();
-       RDFSender rdfs=new RDFSender(f);
+      /* TtlFile f=new TtlFile();
+       RDFSender rdfs=new RDFSender(f);*/
+
+       RDFConstructor rdfc=new RDFConstructor();
 
 
     }
