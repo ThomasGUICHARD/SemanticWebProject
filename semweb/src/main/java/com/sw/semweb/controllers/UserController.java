@@ -1,21 +1,18 @@
 package com.sw.semweb.controllers;
 
+import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.opencsv.exceptions.CsvValidationException;
+import com.sw.semweb.backend.RDFConstructor;
+import com.sw.semweb.backend.RDFSender;
+import com.sw.semweb.backend.TtlFile;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+
 
 
 
@@ -25,8 +22,15 @@ public class UserController {
    
 
     @RequestMapping(value = { "/" }, method = RequestMethod.GET)
-    public String accueil() {
-       
+    public String accueil() throws CsvValidationException, IOException {
+         //RDFConstructor rdfConstr= new RDFConstructor();
+
+       /* RDFConstructor rdfConstr2= new RDFConstructor(0);*/
+
+       TtlFile f=new TtlFile();
+       RDFSender rdfs=new RDFSender(f);
+
+       //RDFConstructor rdfc=new RDFConstructor();
        
         return "accueil";
     }
