@@ -30,7 +30,7 @@ public class UserController {
        /*TtlFile f=new TtlFile();
        RDFSender rdfs=new RDFSender(f);*/
 
-       //RDFConstructor rdfc=new RDFConstructor();
+       RDFConstructor rdfc=new RDFConstructor();
        
         return "accueil";
     }
