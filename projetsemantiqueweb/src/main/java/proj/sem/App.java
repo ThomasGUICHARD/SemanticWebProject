@@ -15,6 +15,6 @@ public class App
     {
         WebScrapper webscrapper= new WebScrapper();
 
-       /* RDFConstructor rdfConstr2= new RDFConstructor(0);*/
+        //RDFConstructor rdfConstr2= new RDFConstructor(0);
     }
 }
