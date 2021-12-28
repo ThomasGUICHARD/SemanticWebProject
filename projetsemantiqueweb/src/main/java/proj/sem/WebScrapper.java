@@ -13,6 +13,7 @@ import com.opencsv.exceptions.CsvValidationException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,14 +38,15 @@ public class WebScrapper {
             
             //System.out.println(temperature);
         }
-        
-        Model model = ModelFactory.createDefaultModel();
+        String str = temperature.toString();
+        Model model = RDFDataMgr.loadModel(str);
        //model.setNsPrefix("rdfs", RDFS.uri);
         model.setNsPrefix("sosa", "http://www.w3.org/ns/sosa/");
         model.setNsPrefix("time", "http://www.w3.org/2006/time#");
         model.setNsPrefix("location", "http://www.w3.org/2001/XMLSchema#");
 
-        String str = temperature.toString();
+        
+
         //stops200.txt
         //J'ai des problème d'encodage de caractères au niveau du CSVReader mais sinon tout marche
         System.out.println(str);

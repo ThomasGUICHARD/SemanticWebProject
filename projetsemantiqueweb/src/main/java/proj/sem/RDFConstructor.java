@@ -51,7 +51,7 @@ public class RDFConstructor {
     public RDFConstructor(int i) throws CsvValidationException, IOException{
     
         // create an empty Model
-       Model model = ModelFactory.createDefaultModel();
+        Model model = ModelFactory.createDefaultModel();
        //model.setNsPrefix("rdfs", RDFS.uri);
         model.setNsPrefix("name", "http://www.example.com/");
         model.setNsPrefix("time", "http://www.w3.org/2006/time#");
