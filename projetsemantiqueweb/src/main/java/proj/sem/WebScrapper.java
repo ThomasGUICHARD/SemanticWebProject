@@ -2,10 +2,14 @@ package proj.sem;
 
 
 
+import java.io.ByteArrayInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -13,6 +17,8 @@ import com.opencsv.exceptions.CsvValidationException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.jsoup.Jsoup;
@@ -31,39 +37,51 @@ public class WebScrapper {
         for (int i = 1; i < rows.size(); i++) { //start at 1 to skip 
             Element row = rows.get(i);
             Elements cols = row.select("td");
-            temperature.add(cols.get(0).text());
+            //temperature.add(cols.get(0).text());
             temperature.add(cols.get(4).text());
             
             //System.out.println(cols.get(0).text()+" : "+ cols.get(4).text());
             
             //System.out.println(temperature);
         }
-        String str = temperature.toString();
-        Model model = RDFDataMgr.loadModel(str);
-       //model.setNsPrefix("rdfs", RDFS.uri);
-        model.setNsPrefix("sosa", "http://www.w3.org/ns/sosa/");
-        model.setNsPrefix("time", "http://www.w3.org/2006/time#");
-        model.setNsPrefix("location", "http://www.w3.org/2001/XMLSchema#");
-
         
+        String csvString = String.join(",", temperature);
+        Model model = ModelFactory.createDefaultModel();
+       //model.setNsPrefix("rdfs", RDFS.uri);
+    
+        model.setNsPrefix("sosa", "http://www.w3.org/ns/sosa/");
+        //model.setNsPrefix("temperature","");
+        String input = csvString.toString();
+        input = input.substring(0,input.length());
+        String[] split = input.split(",");        
+        FileWriter writer = new FileWriter("C:/Users/Meddy/Desktop/M2/semweb/SemanticWebProject/sto1.csv");
+        for(String s : split) {
+            String[] split2 = s.split(",");
+            writer.write(Arrays.asList(split2).stream().collect(Collectors.joining(",")));
+            writer.write("\n"); // newline
+        }
 
-        //stops200.txt
-        //J'ai des problème d'encodage de caractères au niveau du CSVReader mais sinon tout marche
-        System.out.println(str);
-        CSVReader reader = new CSVReader(new FileReader(""));
+        writer.close();
+        CSVReader reader = new CSVReader(new FileReader("C:/Users/Meddy/Desktop/M2/semweb/SemanticWebProject/sto1.csv"));
 
         String[] lineInArray;
         lineInArray = reader.readNext();
         while ((lineInArray = reader.readNext()) != null) {
             
             Resource root=model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+"observation");
-            root.addProperty(model.createProperty("http://www.w3.org/2006/time#"), lineInArray[1]);
             //root.addProperty(model.createProperty("http://www.w3.org/2003/01/geo/wgs84_pos#"+"lat"), lineInArray[3] ,XSDGenericType.XSDdecimal);
-            root.addProperty(model.createProperty("https://www.w3.org/TR/vocab-ssn/"), lineInArray[10]);
-        
+            root.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"), lineInArray[0]);
             model.add(root,RDF.type,model.createResource("http://www.w3.org/2003/01/geo/wgs84_pos#"+"SpatialThing"));
         }
 
+        model.write(System.out, "Turtle");
+        String datasetURL = "http://localhost:3030/Data";
+        String sparqlEndpoint = datasetURL + "/sparql";
+        String sparqlUpdate = datasetURL + "/update";
+        String graphStore = datasetURL + "/data";
+        RDFConnection conneg = RDFConnectionFactory.connect(sparqlEndpoint,sparqlUpdate,graphStore);
+        conneg.load(model); // add the content of model to the triplestore
+        conneg.update("INSERT DATA { <test> a <TestClass> }"); // add the triple to the triplestore
 
     }
 }
