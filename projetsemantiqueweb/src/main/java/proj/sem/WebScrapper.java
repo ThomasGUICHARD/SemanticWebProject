@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.xml.crypto.Data;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -28,38 +32,47 @@ import org.jsoup.select.Elements;
 
 public class WebScrapper {
     public WebScrapper() throws CsvValidationException, IOException{
-        Document doc = Jsoup.connect("https://www.meteociel.fr/temps-reel/obs_villes.php?code2=7475&jour2=16&mois2=10&annee2=2021").get();  
+        int nbJour = 4;
+        int nbMois = 11;
+        int nbAnnee = 2021; 
+        Document doc = Jsoup.connect("https://www.meteociel.fr/temps-reel/obs_villes.php?code2=7475&jour2="+nbJour+"&mois2="+nbMois+"&annee2="+nbAnnee).get();  
         ArrayList<String> temperature = new ArrayList<>();
         ArrayList<String> heureLocale = new ArrayList<>();
-        Element table = doc.select("table").get(7); //select the first table.
+        Element table = doc.select("table").get(7); //select the 7th table.
         Elements rows = table.select("tr");
 
         for (int i = 1; i < rows.size(); i++) { //start at 1 to skip 
             Element row = rows.get(i);
             Elements cols = row.select("td");
-            //temperature.add(cols.get(0).text());
+            temperature.add(cols.get(0).text());
+            System.out.println(temperature);
             temperature.add(cols.get(4).text());
             
+            //System.out.println(temperature);
             //System.out.println(cols.get(0).text()+" : "+ cols.get(4).text());
-            
             //System.out.println(temperature);
         }
-        
-        String csvString = String.join(",", temperature);
+                
         Model model = ModelFactory.createDefaultModel();
-       //model.setNsPrefix("rdfs", RDFS.uri);
-    
+
         model.setNsPrefix("sosa", "http://www.w3.org/ns/sosa/");
+        model.setNsPrefix("obs","https://territoire.emse.fr/kg/emse/fayol/observation/");
         //model.setNsPrefix("temperature","");
-        String input = csvString.toString();
-        input = input.substring(0,input.length());
-        String[] split = input.split(",");        
+
+        String inputtemp = temperature.toString();
+
+        
+        inputtemp = inputtemp.substring(1,inputtemp.length()-1);
+        String[] splittemp = inputtemp.split("°C,");  
         FileWriter writer = new FileWriter("C:/Users/Meddy/Desktop/M2/semweb/SemanticWebProject/sto1.csv");
-        for(String s : split) {
+        for(String s : splittemp  ) {
             String[] split2 = s.split(",");
+            
             writer.write(Arrays.asList(split2).stream().collect(Collectors.joining(",")));
-            writer.write("\n"); // newline
+            writer.write("\n");
+            
         }
+
 
         writer.close();
         CSVReader reader = new CSVReader(new FileReader("C:/Users/Meddy/Desktop/M2/semweb/SemanticWebProject/sto1.csv"));
@@ -68,10 +81,12 @@ public class WebScrapper {
         lineInArray = reader.readNext();
         while ((lineInArray = reader.readNext()) != null) {
             
-            Resource root=model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+"observation");
-            //root.addProperty(model.createProperty("http://www.w3.org/2003/01/geo/wgs84_pos#"+"lat"), lineInArray[3] ,XSDGenericType.XSDdecimal);
-            root.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"), lineInArray[0]);
-            model.add(root,RDF.type,model.createResource("http://www.w3.org/2003/01/geo/wgs84_pos#"+"SpatialThing"));
+            Resource observation=model.createResource("https://territoire.emse.fr/kg/emse/fayol/observation/"+"observation"+"-");
+            observation.addProperty(RDF.type, model.createResource("http://www.w3.org/ns/sosa/"+"Observation"));
+            //heures
+            observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"observedProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+lineInArray[0]));
+            //temperature
+            observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"ObservableProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+lineInArray[1]));
         }
 
         model.write(System.out, "Turtle");
@@ -80,6 +95,7 @@ public class WebScrapper {
         String sparqlUpdate = datasetURL + "/update";
         String graphStore = datasetURL + "/data";
         RDFConnection conneg = RDFConnectionFactory.connect(sparqlEndpoint,sparqlUpdate,graphStore);
+        
         conneg.load(model); // add the content of model to the triplestore
         conneg.update("INSERT DATA { <test> a <TestClass> }"); // add the triple to the triplestore
 
