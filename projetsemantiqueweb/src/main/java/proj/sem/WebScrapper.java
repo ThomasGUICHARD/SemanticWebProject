@@ -76,17 +76,18 @@ public class WebScrapper {
 
         writer.close();
         CSVReader reader = new CSVReader(new FileReader("C:/Users/Meddy/Desktop/M2/semweb/SemanticWebProject/sto1.csv"));
-
+        int idObs=0;
         String[] lineInArray;
         lineInArray = reader.readNext();
         while ((lineInArray = reader.readNext()) != null) {
-            
-            Resource observation=model.createResource("https://territoire.emse.fr/kg/emse/fayol/observation/"+"observation"+"-");
+            idObs +=1;
+            Resource observation=model.createResource("https://territoire.emse.fr/kg/emse/fayol/observation/"+"ObservationExt"+idObs);
+
             observation.addProperty(RDF.type, model.createResource("http://www.w3.org/ns/sosa/"+"Observation"));
             //heures
             observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"observedProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+lineInArray[0]));
             //temperature
-            observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"ObservableProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+lineInArray[1]));
+            observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"observedProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+lineInArray[1]));
         }
 
         model.write(System.out, "Turtle");
