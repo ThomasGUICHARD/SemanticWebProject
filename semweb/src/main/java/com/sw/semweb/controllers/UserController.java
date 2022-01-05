@@ -2,6 +2,8 @@ package com.sw.semweb.controllers;
 
 import java.io.IOException;
 
+import javax.annotation.Resource;
+
 import com.github.andrewoma.dexx.collection.List;
 import com.opencsv.exceptions.CsvValidationException;
 import com.sw.semweb.backend.RDFConstructor;
@@ -13,6 +15,9 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.data.annotation.QueryAnnotation;
 import org.springframework.stereotype.Controller;
 
@@ -34,23 +39,16 @@ public class UserController {
 
         //RDFConstructor rdfConstr2= new RDFConstructor(0);
 
-       TtlFile f=new TtlFile();
-       RDFSender rdfs=new RDFSender(f);
+       //TtlFile f=new TtlFile();
+       //RDFSender rdfs=new RDFSender(f);
 
-       //RDFConstructor rdfc=new RDFConstructor();
-       
-        return "accueil";
-    }
-
-    @RequestMapping(value= {"/request"}, method = RequestMethod.GET)
-    public void request(){
-        String queryString=
- 
-        "PREFIX sc: <http://purl.org/science/owl/sciencecommons/>"+
+       RDFConstructor rdfc=new RDFConstructor();
+       String queryString=
+        "PREFIX sosa: <http://www.w3.org/ns/sosa/>"+
         "PREFIX schema: <http://schema.org/>"+
 
 
-        "SELECT ?subsubject ?subject ?date ?val"+
+        "SELECT ?subsubject ?subject ?date ?val "+
         "WHERE {"+
         "?subject sosa:madeBySensor ?subsubject."+
         "?subject ?predicate sosa:Observation."+
@@ -59,11 +57,13 @@ public class UserController {
         
         "}"+
         "LIMIT 200";
-
-        Query query = QueryFactory.create(queryString);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService("http://dbpedia.org/snorql", query);
-        qexec.close();
         
+        Query query = QueryFactory.create(queryString);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService("http://localhost:3030/Data/", query);
+        ResultSet results = qexec.execSelect();
+        ResultSetFormatter.out(System.out, results, query);   
+        qexec.close();
+        return "accueil";
     }
 
 
