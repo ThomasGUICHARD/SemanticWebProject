@@ -11,10 +11,18 @@
   <body>
 
     <form action="" class="formulaire">
-      <input id="searchbar" class="field" name="search" type="text" placeholder="Search..."/>
-           <input class="button" name="searchButton" type="button" value="Search " />
+      
+      <select>
+        <option value="default">Select a country</option>
+        <option th:each="listeRoom, iterstat: ${listRoom}" th:value="${listeRoom}"th:text="${listeRoom}"/>
+      </select>
+      <input class="button" name="searchButton" type="button" value="Search " />
             
        </form>
-    
+
+       
+    <!--   <tr th:each="listeRoom, iterstat: ${listRoom}">
+        <td th:text="${listeRoom}" th:id="|td${iterstat.index}|"></td>
+      </tr>--> 
   </body>
 </html>
