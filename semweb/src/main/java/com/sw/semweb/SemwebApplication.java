@@ -11,4 +11,6 @@ public class SemwebApplication {
 		SpringApplication.run(SemwebApplication.class, args);
 	}
 
+
+
 }
