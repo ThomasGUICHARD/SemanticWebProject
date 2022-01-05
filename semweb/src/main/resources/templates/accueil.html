@@ -10,13 +10,13 @@
   </head>
   <body>
 
-    <form action="" class="formulaire">
+    <form action="#" th:action="@{/getResult}"  method="post" ><!--th:object="${id}" -->
       
-      <select>
-        <option value="default">Select a country</option>
-        <option th:each="listeRoom, iterstat: ${listRoom}" th:value="${listeRoom}"th:text="${listeRoom}"/>
+      <select name="room">
+        <option value="default">Select a room</option>
+        <option th:each="listeRoom, iterstat: ${listRoom}" th:value="${listeRoom}" th:text="${listeRoom}"/>
       </select>
-      <input class="button" name="searchButton" type="button" value="Search " />
+      <input type="submit" value="Submit" /> 
             
        </form>
 

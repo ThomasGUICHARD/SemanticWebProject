@@ -11,6 +11,7 @@ import com.sw.semweb.backend.TtlFile;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +32,7 @@ import org.apache.jena.rdfconnection.RDFConnectionFactory;
 @Controller
 public class UserController {
 
-   
+    ArrayList<String> listeRoom=new ArrayList<String>();;
 
     @RequestMapping(value = { "/" }, method = RequestMethod.GET)
     public String accueil(org.springframework.ui.Model model) throws CsvValidationException, IOException {
@@ -40,9 +41,10 @@ public class UserController {
         String sparqlEndpoint = datasetURL + "/sparql";
         String sparqlQuery = datasetURL + "/query";
         String graphStore = datasetURL + "/data";
-        ArrayList<String> listeRoom =new ArrayList<String>();
+        int id=0;
+        listeRoom.clear();
         RDFConnection conneg = RDFConnectionFactory.connect(sparqlEndpoint,sparqlQuery,graphStore);
-
+        model.addAttribute("id", id);
       
 
         QueryExecution qExec = conneg.query("prefix bot: <https://w3id.org/bot#> SELECT DISTINCT ?s { ?s a bot:Space . }") ;
@@ -58,10 +60,13 @@ public class UserController {
         qExec.close();
         return "accueil";
     }
-    @RequestMapping(value = "/GetRoomList", method = RequestMethod.GET)
-    public String getRoomList() {
+    
+    @PostMapping("/getResult")
+    
+    public String getResult(@RequestParam(name = "room") String leNom ,org.springframework.ui.Model model) {
+        System.out.println(leNom);
         
-        return "";
+        return "redirect:/";
     }
    
 }
