@@ -30,14 +30,14 @@ public class UserController {
 
     @RequestMapping(value = { "/" }, method = RequestMethod.GET)
     public String accueil() throws CsvValidationException, IOException {
-         //RDFConstructor rdfConstr= new RDFConstructor();
+        RDFConstructor rdfConstr= new RDFConstructor();
 
-       /* RDFConstructor rdfConstr2= new RDFConstructor(0);*/
+        //RDFConstructor rdfConstr2= new RDFConstructor(0);
 
-       /*TtlFile f=new TtlFile();
-       RDFSender rdfs=new RDFSender(f);*/
+       TtlFile f=new TtlFile();
+       RDFSender rdfs=new RDFSender(f);
 
-       RDFConstructor rdfc=new RDFConstructor();
+       //RDFConstructor rdfc=new RDFConstructor();
        
         return "accueil";
     }
