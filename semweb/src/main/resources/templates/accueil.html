@@ -10,11 +10,19 @@
   </head>
   <body>
 
-    <form action="" class="formulaire">
-      <input id="searchbar" class="field" name="search" type="text" placeholder="Search..."/>
-           <input class="button" name="searchButton" type="button" value="Search " />
+    <form action="#" th:action="@{/getResult}"  method="post" ><!--th:object="${id}" -->
+      
+      <select name="room">
+        <option value="default">Select a room</option>
+        <option th:each="listeRoom, iterstat: ${listRoom}" th:value="${listeRoom}" th:text="${listeRoom}"/>
+      </select>
+      <input type="submit" value="Submit" /> 
             
-       </form>
-    
+    </form>
+
+    <p th:text="'Hello, ' + ${hi} + '!'" />
+    <!--   <tr th:each="listeRoom, iterstat: ${listRoom}">
+        <td th:text="${listeRoom}" th:id="|td${iterstat.index}|"></td>
+      </tr>--> 
   </body>
 </html>
