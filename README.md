@@ -1,6 +1,6 @@
 ## READ_ME
 
-Pour executer ce projet il faut se placer à l'origine du dosssier "semweb".
+Pour executer ce projet il faut se placer à l'origine du dossier "semweb".
 
 Ce projet a été réalisé en utilisant Spring et Jena.
 
