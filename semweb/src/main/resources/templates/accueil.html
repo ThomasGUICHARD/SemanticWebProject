@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
+
+    <title>Home Page Spring</title>
+  </head>
+  <body>
+
+    <form action="#" th:action="@{/getResult}"  method="post" ><!--th:object="${id}" -->
+      
+      <select name="room">
+        <option value="default">Select a room</option>
+        <option th:each="listeRoom, iterstat: ${listRoom}" th:value="${listeRoom}" th:text="${listeRoom}"/>
+      </select>
+      <input type="submit" value="Submit" /> 
+            
+       </form>
+
+       <table style="text-align: center" class="table table-striped">
+        <thead>
+          <tr><th>Room</th> <th>Sensor</th><th>Observation</th><th>Result Room</th><th>Result Exterior</th><th>Conclusion</th></tr>
+        </thead>
+        <tbody>
+        <tr data-th-each="obs : ${listeObservationInterne}" id="result" table-layout="fixed"  width="100%" border-collapse="collapse" border=" 3px solid purple">
+          <td> <span th:text="${obs.room} "> </span></td>
+          <td> <span th:text="${obs.observationSensor} "> </span></td>
+          <td> <span th:text="${obs.observationId} "> </span></td>
+          <td> <span th:text="${obs.observationResult} "> </span></td>
+          <td> <span th:text="${obs.observationResultExt} "> </span></td>
+          <td> <span th:text="${obs.statut} "> </span></td>
+       </tr>
+      </tbody>
+    </table>
+
+       
+    <!--   <tr th:each="listeRoom, iterstat: ${listRoom}">
+        <td th:text="${listeRoom}" th:id="|td${iterstat.index}|"></td>
+      </tr>--> 
+  </body>
+</html>
