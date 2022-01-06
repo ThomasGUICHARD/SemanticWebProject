@@ -11,6 +11,7 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
@@ -35,9 +36,10 @@ public class UserController {
         listeRoom.clear();
         RDFConnection conneg = RDFConnectionFactory.connect(sparqlEndpoint,sparqlQuery,graphStore);
         model.addAttribute("id", id);
-        QueryExecution qExec = conneg.query("PREFIX sosa: <http://www.w3.org/ns/sosa/>"+
-        "PREFIX schema: <http://schema.org/>"+
-        "SELECT ?s {?s a sosa:Observation . } LIMIT 200");
+        QueryExecution qExec = conneg.query("prefix bot: <https://w3id.org/bot#>"+
+        "prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>"+
+        "prefix sosa: <http://www.w3.org/ns/sosa/>"+
+        " SELECT DISTINCT ?s { ?s a bot:Space . ?se a sosa:Sensor; dul:hasLocation ?s. }") ;
         ResultSet rs = qExec.execSelect() ;
         while(rs.hasNext()) {
             QuerySolution qs = rs.next() ;
@@ -46,6 +48,7 @@ public class UserController {
             //System.out.println("Subject: "+subject) ;
         }
         model.addAttribute("listRoom",listeRoom);
+        //model.addAttribute("hi",listeRoom);
         
         qExec.close();
         return "accueil";
