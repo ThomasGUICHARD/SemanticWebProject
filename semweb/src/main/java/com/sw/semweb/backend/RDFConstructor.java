@@ -91,7 +91,8 @@ public class RDFConstructor {
     //give the rigth adress format
     private String convertTimeStamp(String tss){
        
-         String date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date (Long.parseLong(tss)/100000000))+"T"+new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date (Long.parseLong(tss)/100000000))+"+00:00";
+       //  String date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date (Long.parseLong(tss)/100000000))+"T"+new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date (Long.parseLong(tss)/100000000))+"+00:00";
+         String date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date (Long.parseLong(tss)/1000000))+"T"+new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date (Long.parseLong(tss)/1000000))+"+00:00";
 
         //System.out.println(date);           
         return date.toString();

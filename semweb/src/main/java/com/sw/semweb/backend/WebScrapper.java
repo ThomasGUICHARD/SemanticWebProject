@@ -30,7 +30,7 @@ public class WebScrapper {
     public  WebScrapper() throws CsvValidationException, IOException{
         int nbJour;
         int nbMois;
-        int moisMin=11;
+        int moisMin=10;
         int moisMax=11;
         int nbAnnee = 2021; 
         Document doc;  
@@ -51,7 +51,7 @@ public class WebScrapper {
         sensor.addProperty(RDF.type, model.createResource("http://www.w3.org/ns/sosa/Sensor"));
         sensor.addProperty(model.createProperty("http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#"+"hasLocation"), model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+"ext"));
         
-        for(nbMois=moisMin;nbMois>=moisMin && nbMois<=moisMax && nbMois<12;nbMois++){
+        for(nbMois=moisMin-1; nbMois<moisMax && nbMois<12;nbMois++){
             for(nbJour=1;nbJour<=31;nbJour++){
 
                 
@@ -76,7 +76,7 @@ public class WebScrapper {
                         observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"madeBySensor"),sensor);
                         observation.addProperty(RDF.type, model.createResource("http://www.w3.org/ns/sosa/"+"Observation"));
                         //heures
-                        observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"resultTime"),this.designDate(nbAnnee, nbMois+1, nbJour, cols.get(0).text().replaceAll(" h", "")),XSDGenericType.XSDdate);
+                        observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"resultTime"),this.designDate(nbAnnee-1, nbMois+1, nbJour, cols.get(0).text().replaceAll(" h", "")),XSDGenericType.XSDdate);
                         //temperature
                         observation.addProperty(model.createProperty("http://schema.org/"+"value"),cols.get(4).text().replaceAll(" °C", ""),XSDGenericType.XSDfloat);
 
@@ -102,7 +102,7 @@ public class WebScrapper {
 
     public void temporarySend(Model m){
 
-        String datasetURL = "http://localhost:3030/Data";
+        String datasetURL = "http://localhost:3030/DataSem";
         String sparqlEndpoint = datasetURL + "/sparql";
         String sparqlUpdate = datasetURL + "/update";
         String graphStore = datasetURL + "/data";

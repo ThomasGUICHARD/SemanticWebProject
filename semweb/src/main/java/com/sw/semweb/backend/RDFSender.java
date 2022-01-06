@@ -11,7 +11,7 @@ import org.apache.jena.rdfconnection.RDFConnectionFactory;
 public class RDFSender {
     public RDFSender() {}
     public RDFSender(TtlFile f) {
-        String datasetURL = "http://localhost:3030/Data";
+        String datasetURL = "http://localhost:3030/DataSem";
         String sparqlEndpoint = datasetURL + "/sparql";
         String sparqlUpdate = datasetURL + "/update";
         String graphStore = datasetURL + "/data";
@@ -26,7 +26,7 @@ public class RDFSender {
         System.out.println("All is send");
     }
     public RDFSender(Model m) {
-        String datasetURL = "http://localhost:3030/Data";
+        String datasetURL = "http://localhost:3030/DataSem";
         String sparqlEndpoint = datasetURL + "/sparql";
         String sparqlUpdate = datasetURL + "/update";
         String graphStore = datasetURL + "/data";
@@ -37,7 +37,7 @@ public class RDFSender {
         System.out.println("All is send");
     }
     public void RDFGetter() {
-        String datasetURL = "http://localhost:3030/Data";
+        String datasetURL = "http://localhost:3030/DataSem";
         String sparqlEndpoint = datasetURL + "/sparql";
         String sparqlQuery = datasetURL + "/query";
         String graphStore = datasetURL + "/data";
