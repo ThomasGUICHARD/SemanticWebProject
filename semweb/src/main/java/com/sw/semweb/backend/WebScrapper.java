@@ -76,7 +76,7 @@ public class WebScrapper {
                         observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"madeBySensor"),sensor);
                         observation.addProperty(RDF.type, model.createResource("http://www.w3.org/ns/sosa/"+"Observation"));
                         //heures
-                        observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"resultTime"),this.designDate(nbAnnee-1, nbMois+1, nbJour, cols.get(0).text().replaceAll(" h", "")),XSDGenericType.XSDdate);
+                        observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"resultTime"),this.designDate(nbAnnee, nbMois+1, nbJour, cols.get(0).text().replaceAll(" h", "")),XSDGenericType.XSDdateTime);
                         //temperature
                         observation.addProperty(model.createProperty("http://schema.org/"+"value"),cols.get(4).text().replaceAll(" °C", ""),XSDGenericType.XSDfloat);
 

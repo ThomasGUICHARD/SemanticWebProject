@@ -70,9 +70,9 @@ public class RDFConstructor {
                 //property observed
                 observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"observedProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+this.formateRoom(lineInArray[9])+"#temperature"));
                 //time  "2017-06-06T12:36:12Z"^^xsd:dateTime
-                observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"observedProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+this.formateRoom(lineInArray[9])+"#temperature"));
+                //observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"observedProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+this.formateRoom(lineInArray[9])+"#temperature"));
                 //Date observation
-                observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"resultTime"),this.convertTimeStamp(lineInArray[1]),XSDGenericType.XSDdate);
+                observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"resultTime"),this.convertTimeStamp(lineInArray[1]),XSDGenericType.XSDdateTime);
                 observation.addProperty(model.createProperty("http://schema.org/"+"value"),lineInArray[7],XSDGenericType.XSDfloat);
             
             }

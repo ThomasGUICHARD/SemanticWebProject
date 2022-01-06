@@ -2,7 +2,10 @@ package com.sw.semweb.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.opencsv.exceptions.CsvValidationException;
 import com.sw.semweb.backend.RDFConstructor;
@@ -31,12 +34,13 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
+import org.apache.jena.sparql.function.library.print;
 
 @Controller
 public class UserController {
 
     ArrayList<String> listeRoom=new ArrayList<String>();
-   // ArrayList<Observation> listeObservationInterne=new ArrayList<Observation>();
+    ArrayList<Observation> listeObservationInterne=new ArrayList<Observation>();
     String datasetURL = "http://localhost:3030/DataSem";
     String sparqlEndpoint = datasetURL + "/sparql";
     String sparqlQuery = datasetURL + "/query";
@@ -61,9 +65,9 @@ public class UserController {
     @RequestMapping(value = { "/accueil" }, method = RequestMethod.GET)
     public String accueil(org.springframework.ui.Model model) throws CsvValidationException, IOException {
          
-        
+        System.out.println("enter accueil");
         model.addAttribute("listRoom",listeRoom);
-        //model.addAttribute("listeObservationInterne",listeObservationInterne);
+        model.addAttribute("listeObservationInterne",listeObservationInterne);
         listeRoom.clear();
         RDFConnection conneg = RDFConnectionFactory.connect(sparqlEndpoint,sparqlQuery,graphStore);
         QueryExecution qExec = conneg.query("prefix bot: <https://w3id.org/bot#>"+
@@ -86,16 +90,15 @@ public class UserController {
     @PostMapping("/getResult")
     
     public String getResult(@RequestParam(name = "room") String leNom ,org.springframework.ui.Model model) {
-       // System.out.println(leNom);
-
+        System.out.println(leNom);
+        listeObservationInterne.clear();
         RDFConnection conneg = RDFConnectionFactory.connect(sparqlEndpoint,sparqlQuery,graphStore);
         QueryExecution qExec = conneg.query("prefix bot: <https://w3id.org/bot#>"+ 
         "prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>"+
         "prefix sosa: <http://www.w3.org/ns/sosa/>"+ 
         "prefix schema:<http://schema.org/>"+
         "prefix salle:<https://territoire.emse.fr/kg/emse/fayol/>"+
-        "SELECT ?s ?o ?t ?v  { ?s a sosa:Sensor; dul:hasLocation <"+leNom+">. ?o sosa:madeBySensor ?s; sosa:resultTime ?t; schema:value ?v."+
-        "} LIMIT 200") ;
+        "SELECT ?s ?o ?t ?v { ?s a sosa:Sensor; dul:hasLocation <"+leNom+">. ?o sosa:madeBySensor ?s; sosa:resultTime ?t; schema:value ?v.} LIMIT 10") ;
        /* "SELECT ?s ?o ?t ?v ?ve { ?s a sosa:Sensor; dul:hasLocation <"+leNom+">. ?o sosa:madeBySensor ?s; sosa:resultTime ?t; schema:value ?v."+
         " ?oe sosa:madeBySensor salle:sensor-ext; sosa:resultTime ?t; schema:value ?ve. }") ;*/
         ResultSet rs = qExec.execSelect() ;
@@ -105,32 +108,78 @@ public class UserController {
             Resource observation = qs.getResource("o") ;
             Literal time = qs.getLiteral("t") ;
             Literal value = qs.getLiteral("v") ;
-           /* QueryExecution qExec2 = conneg.query("prefix bot: <https://w3id.org/bot#>"+ 
+           System.out.println("\n\n ###########################interieur:\n "+sensor+"\n"+observation+"\n"+time.getString()+"\n"+value.getString()+"\n\n") ;
+            QueryExecution qExec2 = conneg.query("prefix bot: <https://w3id.org/bot#>"+ 
                                 "prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>"+
                                 "prefix sosa: <http://www.w3.org/ns/sosa/>"+ 
                                 "prefix schema:<http://schema.org/>"+
                                 "prefix xsd: <http://www.w3.org/2001/XMLSchema#>"+
                                 "prefix salle:<https://territoire.emse.fr/kg/emse/fayol/>"+
-                                "SELECT ?oe {  ?oe sosa:madeBySensor <https://territoire.emse.fr/kg/emse/fayol/sensor-ext>; sosa:resultTime \""+time.getString()+"\"^^xsd:date.}") ;
+                                "SELECT ?oe ?v{  ?oe sosa:madeBySensor <https://territoire.emse.fr/kg/emse/fayol/sensor-ext>; sosa:resultTime ?t2; schema:value ?v."+
+                                " FILTER ("+
+                                "HOURS(?t2) = "+String.valueOf(getHours(time.getString()))+" &&"+
+                                "DAY(?t2) = "+String.valueOf(getDay(time.getString()))+" &&"+
+                                "MONTH(?t2) = "+String.valueOf(getMonth(time.getString()))+" &&"+
+                                "YEAR(?t2) = "+String.valueOf(getYear(time.getString()))+""+")}") ;
+                                /**/
+                                
             ResultSet rs2 = qExec2.execSelect() ;
+            Literal value2;
             while(rs2.hasNext()){
-                QuerySolution qs2 = rs.next() ;
-                Resource observation2 = qs.getResource("oe") ;
-                System.out.println("\n\n ###########################exterieur:\n "+observation2+"\n\n") ;
-            }*/
+                QuerySolution qs2 = rs2.next() ;
+                value2 = qs2.getLiteral("v") ;
+                listeObservationInterne.add(new Observation(leNom,observation.toString(), time.toString(), sensor.toString(), value.getFloat(),value2.getFloat()));
+               // System.out.println("\n\n ###########################exterieur:\n "+observation2.toString()+"\n\n") ;
+            }
             
-           System.out.println("\n\n ###########################interieur:\n "+sensor+"\n"+observation+"\n"+time.getString()+"\n"+value.getString()+"\n\n") ;
+           qExec2.close();
            
         }
-        
+        qExec.close();
+        System.out.println(listeObservationInterne.size());
         return "redirect:/accueil";
     }
-   /* observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"madeBySensor"),sensor);
-    //property observed
-    observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"observedProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+this.formateRoom(lineInArray[9])+"#temperature"));
-    //time  "2017-06-06T12:36:12Z"^^xsd:dateTime
-    observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"observedProperty"),model.createResource("https://territoire.emse.fr/kg/emse/fayol/"+this.formateRoom(lineInArray[9])+"#temperature"));
-    //Date observation
-    observation.addProperty(model.createProperty("http://www.w3.org/ns/sosa/"+"resultTime"),this.convertTimeStamp(lineInArray[1]),XSDGenericType.XSDdate);
-    observation.addProperty(model.createProperty("http://schema.org/"+"value"),lineInArray[7],XSDGenericType.XSDfloat);*/
+ 
+    public int getHours(String s){
+        String dateP = "/^(\\d{1,4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,2}):([^<]*)$/";
+        Pattern p = Pattern.compile(dateP);
+        Matcher m = p.matcher(s);
+        if (m.matches()) {
+            return Integer.getInteger( m.group(4));
+
+        }
+
+
+        return 8;
+    }
+    public int getDay(String s){
+        String dateP = "/^(\\d{1,4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,2}):([^<]*)$/";
+        Pattern p = Pattern.compile(dateP);
+        Matcher m = p.matcher(s);
+        if (m.matches()) {
+            return Integer.getInteger( m.group(3));
+
+        }
+        return 1;
+    }
+    public int getMonth(String s){
+        String dateP = "/^(\\d{1,4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,2}):([^<]*)$/";
+        Pattern p = Pattern.compile(dateP);
+        Matcher m = p.matcher(s);
+        if (m.matches()) {
+            return Integer.getInteger( m.group(4));
+
+        }
+        return 11;
+    }
+    public int getYear(String s){
+        String dateP = "/^(\\d{1,4})-(\\d{1,2})-(\\d{1,2})T(\\d{1,2}):([^<]*)$/";
+        Pattern p = Pattern.compile(dateP);
+        Matcher m = p.matcher(s);
+        if (m.matches()) {
+            return Integer.getInteger( m.group(5));
+
+        }
+        return 2021;
+    }
 }
